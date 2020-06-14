@@ -1,29 +1,27 @@
 <template>
     <v-app>
-        <v-main>
-            <v-container fluid>
-                <v-card
-                    class="mx-auto mt-7"
-                    max-width="654"
-                    outlined
-                >
-                    <v-form ref="form" v-model="valid" lazy-validation>
-                        <div class="pa-7">
-                            <v-text-field v-model="email" :rules="emailRules" label="Correo" required></v-text-field>
+        <v-card
+            class="mx-auto"
+            min-width="630"
+            outlined
+        >
+            <v-form ref="form" v-model="valid" lazy-validation>
+                <div class="pa-7">
+                    <v-text-field v-model="email" :rules="emailRules" label="Correo" required></v-text-field>
 
-                            <v-text-field v-model="password" :rules="passwordRules" label="Contraseña" type="password" required></v-text-field>
-                        </div>
+                    <v-text-field v-model="password" :rules="passwordRules" label="Contraseña" type="password" required></v-text-field>
+                </div>
 
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
 
-                            <v-btn color="error" class="mr-4" @click="reset">Limpiar</v-btn>
-                            <v-btn :disabled="!valid" color="primary" class="mr-4" @click="validate">Iniciar sesión</v-btn>
-                        </v-card-actions>
-                    </v-form>
-                </v-card>
-            </v-container>
-        </v-main>
+                    <v-btn color="error" class="mr-4" @click="reset">Limpiar</v-btn>
+                    <v-btn :disabled="!valid" color="primary" class="mr-4" @click="validate">Iniciar</v-btn>
+                </v-card-actions>
+            </v-form>
+        </v-card>
+
+        <v-snackbar v-model="prevRegistered">Usuario registrado!</v-snackbar>
     </v-app>
 </template>
 
@@ -32,6 +30,10 @@ import http from "@/plugins/http.js";
 
 export default {
     name: "Login",
+
+    props: {
+        registered: Boolean
+    },
 
     data: () => ({
         valid: false,
@@ -65,6 +67,13 @@ export default {
         },
         reset() {
             this.$refs.form.reset();
+        }
+    },
+
+    computed: {
+        prevRegistered: {
+            get() { return this.registered; },
+            set(fadeSnack) { return fadeSnack }
         }
     }
 };
