@@ -2,8 +2,9 @@ import Vue from 'vue'
 import axios from 'axios';
 import router from '../router/index';
 
+const URL = 'http://localhost:3000/api';
 const http =  axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: URL,
     responseType: 'json',
 });
 
@@ -32,4 +33,4 @@ http.interceptors.response.use(
     }
 );
 
-export default http;
+export { http, URL };
