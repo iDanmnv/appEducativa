@@ -10,6 +10,7 @@ import Home from '../components/dashboard/Home.vue'
 import Courses from '../components/dashboard/Courses.vue'
 import Account from '../components/dashboard/Account.vue'
 import Login from '../components/Auth/Login.vue'
+import Register from '../components/Auth/Register.vue'
 
 Vue.use(VueRouter)
 
@@ -42,7 +43,13 @@ const routes = [
             {
                 path: '/login',
                 name: 'Login',
-                component: Login
+                component: Login,
+                props: true
+            },
+            {
+                path: '/register',
+                name: 'Register',
+                component: Register
             }
         ]
     }
@@ -57,7 +64,7 @@ router.beforeEach((to, from, next) => {
     let token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
 
     // Usuario no logueado, se manda al login.
-    if (to.name !== 'Login' && token == null) {
+    if (to.matched[0].path !== '/auth' && token == null) {
         next({ name: 'Login' });
     }
     else next();
