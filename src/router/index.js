@@ -11,8 +11,7 @@ Vue.use(VueRouter)
 const routes = [
 	{
 		path: '/',
-		name: 'Dashboard',
-		component: Dashboard,
+        component: Dashboard,
 		children: [
 			{
                 path: '',
@@ -41,5 +40,16 @@ const routes = [
 const router = new VueRouter({
 	routes
 })
+
+// Auth Guard
+router.beforeEach((to, from, next) => {
+    let token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
+
+    // Usuario no logueado, se manda al login.
+    if (to.name !== 'Login' && token == null) {
+        next({ name: 'Login' });
+    }
+    else next();
+});
 
 export default router
