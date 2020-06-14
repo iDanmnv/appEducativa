@@ -26,7 +26,7 @@ http.interceptors.response.use(
         if (error.response.status == 401) {
             // Si se obtiene este código, eliminamos la cookie actual con el jwt inválido.
             Vue.cookie.delete('SSaeI');
-            router.push({ name: 'Login' });
+            router.push({ name: 'Login', params: { showSnack: true, message: "Sesión expirada" }});
         }
         return Promise.reject(error);
     }

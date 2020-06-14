@@ -56,7 +56,7 @@ export default {
                 axios.post('http://localhost:3000/api/auth/register', { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: "USER" })
                     .then(res => {
                         // Success
-                        if (res.data.ok) this.$router.push({ name: 'Login', params: { registered: true }});
+                        if (res.data.ok) this.$router.push({ name: 'Login', params: { showSnack: true, message: "Usuario registrado!" }});
                     })
                     .catch(err => console.log(err) );
             }

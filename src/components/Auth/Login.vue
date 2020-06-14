@@ -21,7 +21,7 @@
             </v-form>
         </v-card>
 
-        <v-snackbar v-model="prevRegistered">Usuario registrado!</v-snackbar>
+        <v-snackbar v-model="prevRegistered">{{snackText}}</v-snackbar>
     </v-app>
 </template>
 
@@ -32,7 +32,8 @@ export default {
     name: "Login",
 
     props: {
-        registered: Boolean
+        showSnack: Boolean,
+        message: String
     },
 
     data: () => ({
@@ -72,8 +73,11 @@ export default {
 
     computed: {
         prevRegistered: {
-            get() { return this.registered; },
-            set(fadeSnack) { return fadeSnack }
+            get() { return this.showSnack; },
+            set(hideSnack) { return hideSnack }
+        },
+        snackText() {
+            return this.message;
         }
     }
 };
