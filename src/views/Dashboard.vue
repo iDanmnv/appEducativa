@@ -75,7 +75,7 @@
 							<v-spacer></v-spacer>
 							<v-btn color="primary" text @click="dialogSess = false">No</v-btn>
 
-							<v-btn color="primary" text @click="dialogSess = false" >Sí</v-btn>
+							<v-btn color="primary" text @click="closeSession" >Sí</v-btn>
 						</v-card-actions>
 					</v-card>
 				</v-dialog>
@@ -107,6 +107,11 @@ export default {
         },
         changeTheme() {
             this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+        },
+        closeSession() {
+            this.dialogSess = false;
+            this.$cookie.delete('SSaeI');
+            this.$router.push({ name: 'Login' });
         }
     }
 }
