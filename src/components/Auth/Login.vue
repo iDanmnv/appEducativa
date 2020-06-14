@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios';
+import { URL } from '@/plugins/http.js';
 
 export default {
     name: "Login",
@@ -54,7 +55,7 @@ export default {
             // Submit
             if (this.$refs.form.validate()) {
                 // Solicitar jwt
-                axios.post('http://localhost:3000/api/auth/login', { email: this.email, passwd: this.password })
+                axios.post(`${URL}/auth/login`, { email: this.email, passwd: this.password })
                     .then(res => {
                         // Success
                         if (res.data.ok) {
@@ -63,7 +64,7 @@ export default {
                             this.$router.push({ name: 'Home' });
                         }
                     })
-                    .catch(err => console.log(err) );
+                    .catch(err => console.log(err.response) );
             }
         },
         reset() {

@@ -29,6 +29,7 @@
 
 <script>
 import axios from 'axios';
+import { URL } from '@/plugins/http.js';
 
 export default {
     name: "Register",
@@ -53,12 +54,12 @@ export default {
             // Submit
             if (this.$refs.form.validate()) {
                 // Registro
-                axios.post('http://localhost:3000/api/auth/register', { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: "USER" })
+                axios.post(`${URL}/auth/register`, { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: "USER" })
                     .then(res => {
                         // Success
                         if (res.data.ok) this.$router.push({ name: 'Login', params: { showSnack: true, message: "Usuario registrado!" }});
                     })
-                    .catch(err => console.log(err) );
+                    .catch(err => console.log(err.response) );
             }
         },
         reset() {
