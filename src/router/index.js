@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../views/Login.vue'
+
+// Views
+import Auth from '../views/Auth.vue'
 import Dashboard from '../views/Dashboard.vue'
-import Home from '../views/dashboard/Home.vue'
-import Courses from '../views/dashboard/Courses.vue'
-import Account from '../views/dashboard/Account.vue'
+
+// Components
+import Home from '../components/dashboard/Home.vue'
+import Courses from '../components/dashboard/Courses.vue'
+import Account from '../components/dashboard/Account.vue'
+import Login from '../components/Auth/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -31,10 +36,16 @@ const routes = [
 		]
 	},
 	{
-		path: '/login',
-		name: 'Login',
-		component: Login
-	}
+        path: '/auth',
+        component: Auth,
+        children: [
+            {
+                path: '/login',
+                name: 'Login',
+                component: Login
+            }
+        ]
+    }
 ]
 
 const router = new VueRouter({
