@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import http from "@/plugins/http.js";
+import axios from 'axios';
 
 export default {
     name: "Login",
@@ -53,12 +53,12 @@ export default {
             // Submit
             if (this.$refs.form.validate()) {
                 // Solicitar jwt
-                http.post('/auth/login', { email: this.email, passwd: this.password })
+                axios.post('http://localhost:3000/api/auth/login', { email: this.email, passwd: this.password })
                     .then(res => {
                         // Success
                         if (res.data.ok) {
                             // Guardar jwt en cookie
-                            this.$cookie.set('SSaeI', res.data.jwt, 2);
+                            this.$cookie.set('SSaeI', res.data.jwt, { expires: '2D' });
                             this.$router.push({ name: 'Home' });
                         }
                     })

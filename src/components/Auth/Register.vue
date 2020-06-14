@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import http from "@/plugins/http.js";
+import axios from 'axios';
 
 export default {
     name: "Register",
@@ -53,7 +53,7 @@ export default {
             // Submit
             if (this.$refs.form.validate()) {
                 // Registro
-                http.post('/auth/register', { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: "USER" })
+                axios.post('http://localhost:3000/api/auth/register', { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: "USER" })
                     .then(res => {
                         // Success
                         if (res.data.ok) this.$router.push({ name: 'Login', params: { registered: true }});
