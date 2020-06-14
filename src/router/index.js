@@ -34,7 +34,8 @@ const routes = [
                 name: 'Account',
                 component: Account
             }
-		]
+        ],
+        meta: { auth: true },
 	},
 	{
         path: '/auth',
@@ -51,7 +52,18 @@ const routes = [
                 name: 'Register',
                 component: Register
             }
-        ]
+        ],
+        meta: { auth: false },
+        beforeEnter: (to, from, next) => { // Guard para redirigir usuarios logueados.
+            const token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
+            // Usuario logueado, se manda a home.
+            if (token !== null)  {
+                next({ name: 'Home' });
+            }
+            else {
+                next();
+            }
+        }
     }
 ]
 
@@ -61,13 +73,22 @@ const router = new VueRouter({
 
 // Auth Guard
 router.beforeEach((to, from, next) => {
-    let token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
-
-    // Usuario no logueado, se manda al login.
-    if (to.matched[0].path !== '/auth' && token == null) {
-        next({ name: 'Login' });
+    // Rutas que requieren autenticación
+    if (to.matched.some(record => record.meta.auth)) {
+        const token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
+        // Usuario logueado
+        if (token !== null) {
+            next()
+        }
+        // Usuario no logueado.
+        else {
+            next({ name: 'Login' });
+        }
     }
-    else next();
+    // Rutas que no requieren autenticación
+    else {
+        next();
+    }
 });
 
 export default router
