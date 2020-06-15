@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '../store/index.js';
 
 // Views
 import Auth from '../views/Auth.vue'
@@ -55,9 +56,8 @@ const routes = [
         ],
         meta: { auth: false },
         beforeEnter: (to, from, next) => { // Guard para redirigir usuarios logueados.
-            const token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
             // Usuario logueado, se manda a home.
-            if (token !== null)  {
+            if (store.getters.isAuth)  {
                 next({ name: 'Home' });
             }
             else {
@@ -75,9 +75,8 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     // Rutas que requieren autenticación
     if (to.matched.some(record => record.meta.auth)) {
-        const token = Vue.cookie.get('SSaeI'); // Cookie que contiene un jwt.
         // Usuario logueado
-        if (token !== null) {
+        if (store.getters.isAuth) {
             next()
         }
         // Usuario no logueado.

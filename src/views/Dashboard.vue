@@ -110,8 +110,8 @@ export default {
         },
         closeSession() {
             this.dialogSess = false;
-            this.$cookie.delete('SSaeI');
-            this.$router.push({ name: 'Login' });
+            this.$store.dispatch('logout')
+                .then(() => this.$router.push({ name: 'Login' }));
         }
     }
 }
