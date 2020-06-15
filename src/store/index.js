@@ -42,7 +42,7 @@ export default new Vuex.Store({
 	actions: {
 		login({ commit }, data) {
 			// Promesa para setear usuario y token en el sistema
-			return new Promise((resoleve, reject) => {
+			return new Promise((resolve, reject) => {
 				commit('jwt_request');
 				// Solicitar jwt desde el servidor
 				axios.post(`${URL}/auth/login`, { email: data.email, passwd: data.passwd })
@@ -55,7 +55,7 @@ export default new Vuex.Store({
 
 							// Trigger
 							commit('jwt_success', token, user);
-							resoleve(res);
+							resolve(res);
 						}
 						// Error
 						else commit('jwt_error');
