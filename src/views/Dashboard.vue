@@ -5,6 +5,8 @@
             app
             :permanent="true"
             width="200"
+            color="primary"
+            dark
         >
             <v-layout column fill-height>
                 <v-list dense>
