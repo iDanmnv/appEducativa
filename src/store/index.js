@@ -58,7 +58,10 @@ export default new Vuex.Store({
 							resolve(res);
 						}
 						// Error
-						else commit('jwt_error');
+						else {
+							commit('jwt_error');
+							reject(res);
+						}
 					})
 					// Error
 					.catch(err => {

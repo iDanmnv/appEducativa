@@ -22,6 +22,7 @@
         </v-card>
 
         <v-snackbar v-model="prevRegistered">{{snackText}}</v-snackbar>
+        <v-snackbar v-model="snackError">{{errorText}}</v-snackbar>
     </v-app>
 </template>
 
@@ -46,6 +47,8 @@ export default {
             v => !!v || "Campo obligatorio",
             v => /.+@.+\..+/.test(v) || "Formato incorrecto"
         ],
+        snackError: false,
+        errorText: ''
     }),
 
     methods: {
@@ -55,7 +58,15 @@ export default {
                 // Solicitar jwt
                 this.$store.dispatch('login', { email: this.email, passwd: this.password })
                     .then(() => this.$router.push({ name: 'Home' }))
-                    .catch(err => console.log(err.response));
+                    .catch(err => {
+                        const xhr = err.response;
+                        
+                        if(xhr.status == 400)  this.errorText = xhr.data.err;
+                        else if (xhr.status == 400) this.errorText = "Ocurrió un error interno.";
+                        else this.errorText = "Intente de nuevo más tarde";
+                        
+                        this.snackError = true;
+                    });
             }
         },
         reset() {
