@@ -15,7 +15,7 @@
                             <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
                         </v-list-item-avatar>
 
-                        <v-list-item-title>Daniel Molina</v-list-item-title>
+                        <v-list-item-title>User Name</v-list-item-title>
 
                         <v-btn icon @click.stop="mini = !mini">
                             <v-icon>mdi-chevron-left</v-icon>
@@ -100,7 +100,8 @@ export default {
         items: [
             { icon: "rss", text: "Mis cursos", page: "/" },
             { icon: "view-list", text: "Catálogo", page: "/courses" },
-            { icon: "account-box", text: "Perfil", page: "/profile" }
+            { icon: "account-box", text: "Perfil", page: "/profile" },
+            { icon: "account-box", text: "Chat", page: "/chat" }
         ]
 	}),
 	methods: {
