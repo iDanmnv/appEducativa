@@ -19,13 +19,13 @@ export default new Vuex.Store({
 		jwt_request(state) {
 			state.status = 'fetch';
 		},
-		jwt_success(state, token, user) {
+		jwt_success(state, data) {
 			// Jwt devuelto correcamente, almacenamos cookie y la autenticidad Bearer.
 			state.status = 'done';
-			state.token = token;
-			state.user = user;
-			VueCookie.set('SSaeI', token, { expires: '2D' });
-			http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+			state.token = data.token;
+			state.user = data.user;
+			VueCookie.set('SSaeI', data.token, { expires: '2D' });
+			http.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 		},
 		jwt_error(state) {
 			state.status = 'error';
@@ -54,7 +54,7 @@ export default new Vuex.Store({
 							const user = res.data.usuario;
 
 							// Trigger
-							commit('jwt_success', token, user);
+							commit('jwt_success', { token: token, user: user });
 							resolve(res);
 						}
 						// Error
