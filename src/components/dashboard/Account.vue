@@ -36,7 +36,25 @@
 </template>
 
 <script>
+//import store from '@/store/index.js'
+//import { http } from '@/plugins/http.js'
+
 export default {
-    name: "Account"
+    name: "Account",
+    data: () => ({
+        name: '',
+
+    }),
+    methods: {
+        loadData () {
+            //http.get('/usuario/');
+
+
+            console.log(this.$store.state.user.id);
+        }
+    },
+    mounted(){
+        this.loadData();
+    }
 }
 </script>
