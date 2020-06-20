@@ -70,10 +70,10 @@
             </v-card-title>
     
             <v-card-text>
-               El curso: {{selectedCourse.nombre}}
-               Es impartido por: {{selectedCourse.autor || 'profe sin nombre'}}
+                <p>Nombre del curso: {{selectedCourse.nombre || 'tmp'}}</p>  
+                <p>Impartido por: {{selectedCourse.autor || 'profe sin nombre'}}</p> 
+                <p>El curso consta de un total de {{selectedCourse.contenidos.length || 0}} contenidos disponbiles para ti 24/7</p>
             </v-card-text>
-    
             <v-divider></v-divider>
     
             <v-card-actions>
@@ -100,7 +100,11 @@ export default {
       courses: [],
       coursesByUser: [],
       alert: false,
-      selectedCourse: {},
+      selectedCourse: {
+          contenidos:  [],
+          nombre:'',
+          autor:'',
+      },
       dialog: false,
   }),
   mounted() {
@@ -142,7 +146,7 @@ export default {
       },
       courseInfo(course){
           this.selectedCourse = course;
-          console.log(this.selectedCourse);
+          console.log("this is selected course", this.selectedCourse);
           this.dialog = true;
       },
   }
