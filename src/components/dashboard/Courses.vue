@@ -11,8 +11,12 @@
     .header{
         width:"100%";
         padding: 20px;
-        background: #FFE633;
+        background: #e0e0e0;
         color: black;
+        
+    }
+    .header-text{
+        font-family: Arial, Helvetica, sans-serif;
     }
 </style>
 
@@ -32,7 +36,7 @@
             </div>
         </v-alert>
         <div class="header">
-            <h3>Catalogo de Cursos</h3>
+            <h3 class="header-text">Catalogo de Cursos</h3>
         </div>
         <div style="display: flex; justify-content: center; margin-top: 50px;">
             <v-flex xs12 sm6 md8>
