@@ -15,7 +15,7 @@
                             <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
                         </v-list-item-avatar>
 
-                        <v-list-item-title>User Name</v-list-item-title>
+                        <v-list-item-title>{{this.$store.state.user.nombre}}</v-list-item-title>
 
                         <v-btn icon @click.stop="mini = !mini">
                             <v-icon>mdi-chevron-left</v-icon>

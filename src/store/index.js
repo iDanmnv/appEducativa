@@ -76,7 +76,16 @@ export default new Vuex.Store({
 				commit('logout');
 				resolve();
 			});
-		}
+		},
+		// registerUserInCourse(state, data){
+		// 	http.post()
+		// 	then(r => r.json())
+		// 	.then(r => {
+		// 		if(r.data.ok){
+		// 			console.log('user registered');
+		// 		}
+		// 	});
+		// }
 	},
 	// Obtener variables fuera de vuex
 	getters : {
