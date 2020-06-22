@@ -152,6 +152,8 @@ export default {
             this.loading = false;
         },
         editData () {
+            
+            
             this.successAlert = true;
             this.editing = false;
             window.scrollTo(0,0); 
