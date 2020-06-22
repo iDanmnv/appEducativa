@@ -12,6 +12,7 @@ import Courses from '../components/dashboard/Courses.vue'
 import Account from '../components/dashboard/Account.vue'
 import Login from '../components/Auth/Login.vue'
 import Register from '../components/Auth/Register.vue'
+import Chat from '../components/dashboard/Chat.vue'
 
 Vue.use(VueRouter)
 
@@ -34,6 +35,11 @@ const routes = [
                 path: 'profile',
                 name: 'Account',
                 component: Account
+            },
+            {
+                path: 'chat',
+                name: 'Chat',
+                component: Chat
             }
         ],
         meta: { auth: true },
