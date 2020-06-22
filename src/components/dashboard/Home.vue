@@ -85,6 +85,7 @@
                         <v-select
                         :items="preguntaTmp.respuestas.map((r) => r.respuesta)"
                         label="Respuestas"
+                        v-model="respuestasUsuario"
                         ></v-select>
                     </v-col>
                </div>
@@ -96,7 +97,7 @@
                 <v-btn
                 color="success"
                 text
-                @click="dialog = false"
+                @click="revisarTest()"
                 >
                 Revisar
                 </v-btn>
@@ -131,10 +132,12 @@ export default {
         detailOpened: false,
         dialog: false,
         selectedQuiz: [],
+        respuestasUsuario: {},
     }), 
     mounted() {
     this.getCourses();
     },
+    updated(){},
     methods:{
       getCourses(){
         http.get("/Curso")
@@ -160,6 +163,9 @@ export default {
       startQuiz(contenido){
           this.selectedQuiz = contenido.quiz;
           this.dialog = true;
+      },
+      revisarTest(){
+          console.log(this.respuestasUsuario);
       }
     }
 }
