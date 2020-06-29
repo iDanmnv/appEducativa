@@ -21,6 +21,11 @@
     .header-text{
         font-family: Arial, Helvetica, sans-serif;
     }
+    .contenidos-container{
+        padding: 20px;
+        background: #D6D6D6;
+        border: dashed 1px #B3B2B2;
+    }
 </style>
 
 <template>
@@ -112,39 +117,41 @@
                   <v-text-field label="Nombre del curso" v-model="nuevoCursoNombre"></v-text-field>
                   <v-text-field label="Autor" v-model="nuevoCursoAutor"></v-text-field>
                   <v-divider></v-divider>
-                  <v-subheader>
-                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
-                        Contenidos {{nuevoCursoObject.contenidos.length}}
-                        <v-btn style="padding: 10px" color="primary" @click="agregarContenidoAlCurso()">Agregar Contenido</v-btn>  
-                    </div>                    
-                  </v-subheader>
-                  <div :v-model="nuevoCursoContenidos.length > 0 ? true : false">
-                        <v-text-field label="Titulo del Contenido" v-model="nuevoCursoContenidoTitulo" ></v-text-field>
-                        <v-text-field  type="number" label="nivel" v-model="nuevoCursoContenidoNivel" ></v-text-field>
-                        <v-text-field label="Id de video youtube"  v-model="nuevoCursoContenidoVideo" ></v-text-field>
-                           <v-divider></v-divider>
-                         <v-text-field label="Nombre de examen"  v-model="nuevoCursoContenidoQuizNombre" ></v-text-field>
-                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
-                         <v-subheader>Preguntas</v-subheader>
-                        <v-btn style="padding: 10px"  @click="agregarPreguntasQuiz()">Confirmar Pregunta</v-btn>  
-                            </div>  
-                         <v-text-field label="Pregunta" v-model="nuevoCursoContenidoQuizPregunta"></v-text-field>
-                         <v-text-field label="Respuesta Correcta" v-model="nuevoCursoContenidoQuizRespuesta1"></v-text-field>
-                         <v-text-field label="Respuesta" v-model="nuevoCursoContenidoQuizRespuesta2"></v-text-field>
-                        <v-btn color="secondary" @click="confirmadoNuevoContenido()">Confirmar el contenido del curso</v-btn>
-                  </div>
-                <v-expansion-panels style="padding-top: 20px">
-                <v-expansion-panel
-                    v-for="nuevoContenido in nuevoCursoObject.contenidos"
-                    :key="nuevoContenido.titulo || ''"
-                >
-                    <v-expansion-panel-header>{{nuevoContenido.titulo}}</v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-                </v-expansion-panels>
-            </v-card-text>
+                  <div class="contenidos-container">
+                    <v-subheader>
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+                            Contenidos {{nuevoCursoObject.contenidos.length}}
+                            <v-btn style="padding: 10px" color="primary" @click="agregarContenidoAlCurso()">Agregar Contenido</v-btn>  
+                        </div>                    
+                    </v-subheader>
+                    <div :v-model="nuevoCursoContenidos.length > 0 ? true : false">
+                            <v-text-field label="Titulo del Contenido" v-model="nuevoCursoContenidoTitulo" ></v-text-field>
+                            <v-text-field  type="number" label="nivel" v-model="nuevoCursoContenidoNivel" ></v-text-field>
+                            <v-text-field label="Id de video youtube"  v-model="nuevoCursoContenidoVideo" ></v-text-field>
+                            <v-divider></v-divider>
+                            <v-text-field label="Nombre de examen"  v-model="nuevoCursoContenidoQuizNombre" ></v-text-field>
+                            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+                            <v-subheader>Preguntas</v-subheader>
+                            <v-btn style="padding: 10px"  @click="agregarPreguntasQuiz()">Confirmar Pregunta</v-btn>  
+                                </div>  
+                            <v-text-field label="Pregunta" v-model="nuevoCursoContenidoQuizPregunta"></v-text-field>
+                            <v-text-field label="Respuesta Correcta" v-model="nuevoCursoContenidoQuizRespuesta1"></v-text-field>
+                            <v-text-field label="Respuesta" v-model="nuevoCursoContenidoQuizRespuesta2"></v-text-field>
+                            <v-btn color="primary" @click="confirmadoNuevoContenido()">Confirmar el contenido del curso</v-btn>
+                    </div>
+                    <v-expansion-panels style="padding-top: 20px">
+                    <v-expansion-panel
+                        v-for="nuevoContenido in nuevoCursoObject.contenidos"
+                        :key="nuevoContenido.titulo || ''"
+                    >
+                        <v-expansion-panel-header>{{nuevoContenido.titulo}}</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                    </v-expansion-panels>
+                </div>
+                </v-card-text>
             
             <v-divider></v-divider>
     
@@ -263,7 +270,7 @@ export default {
             nivel: this.nuevoCursoContenidoNivel || 1,
             video: this.nuevoCursoContenidoVideo,
             quiz: {
-                nombre: this.nuevoCursoContenidoQuizNombre,
+                titulo: this.nuevoCursoContenidoQuizNombre,
                 preguntas: this.preguntasContenido,
             }
         });

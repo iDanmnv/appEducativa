@@ -79,13 +79,15 @@
             </v-card-title>
     
             <v-card-text>
-               <div   v-for="preguntaTmp in selectedQuiz.preguntas" :key="preguntaTmp.pregunta">
+               <div   v-for="(preguntaTmp, index) in selectedQuiz.preguntas" :key="preguntaTmp.pregunta">
                     Pregunta: {{preguntaTmp.pregunta}}
                     <v-col class="d-flex" >
                         <v-select
                         :items="preguntaTmp.respuestas.map((r) => r.respuesta)"
-                        label="Respuestas"
-                        v-model="respuestasUsuario"
+                        :label="respuestasExamen[index] != undefined ? 'Pregunta contestada': 'Respuestas'"
+                        :disabled="respuestasExamen[index] != undefined ? true : false"
+                        :item-value="respuestasExamen[index] == undefined ? '' : respuestasExamen[index]"
+                         @change="agregarRespuestaArray($event, index)"
                         ></v-select>
                     </v-col>
                </div>
@@ -133,12 +135,16 @@ export default {
         dialog: false,
         selectedQuiz: [],
         respuestasUsuario: {},
+        respuestasExamen: [],
     }), 
     mounted() {
     this.getCourses();
     },
     updated(){},
     methods:{
+     agregarRespuestaArray(event, index){
+          this.respuestasExamen[index] = event;
+     }, 
       getCourses(){
         http.get("/Curso")
         .then((result) => {
@@ -162,10 +168,23 @@ export default {
       },
       startQuiz(contenido){
           this.selectedQuiz = contenido.quiz;
+          this.respuestasExamen = [];
           this.dialog = true;
       },
       revisarTest(){
-          console.log(this.respuestasUsuario);
+          console.log(this.respuestasExamen);
+          console.log(this.selectedQuiz);
+          let puntuacion = 0;
+          for(let i = 0; i < this.respuestasExamen.length; i++){
+              for(let j = 0; j< this.selectedQuiz.preguntas[i].respuestas.length; j++){
+                  if(this.selectedQuiz.preguntas[i].respuestas[j].respuesta == this.respuestasExamen[i] && this.selectedQuiz.preguntas[i].respuestas[j].correcta == true){
+                    puntuacion++;
+                  }
+              }
+          }
+          const puntuacionMaxima = this.selectedQuiz.preguntas.length;
+          const calificacion = (puntuacion * 10) / puntuacionMaxima;
+          console.log('califiacion: ',calificacion);
       }
     }
 }
