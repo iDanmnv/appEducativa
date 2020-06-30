@@ -40,87 +40,110 @@
 
                         </v-card-title>
                     </v-img>
-                    <v-card-text>
-                        <v-alert
-                        dense
-                        text
-                        type="success"
-                        v-model="successAlert"
-                        dismissible
-                        >
-                            Tu información ha sido <strong>correctamente</strong> actualizada.
-                        </v-alert>
 
-                        <span class="overline">CONFIGURACION</span>
-                        <v-switch v-model="editing" class="mx-2" label="Editar"></v-switch>
-                        <v-list>
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-col cols="12" sm="6">
+                    <!-- Edit: { general, password } -->
+                    <v-tabs
+                        v-model="tab"
+                        background-color="secondary"
+                        dark
+                        grow
+                    >
+                        <v-tab>General</v-tab>
+                        <v-tab>Seguridad</v-tab>
+                    </v-tabs>
+
+                    <v-tabs-items v-model="tab">
+                        <!-- General tab -->
+                        <v-tab-item>
+                            <v-card-text>
+                                <v-alert
+                                    dense
+                                    text
+                                    type="success"
+                                    v-model="successAlert"
+                                    dismissible
+                                >
+                                    Tu información ha sido <strong>correctamente</strong> actualizada.
+                                </v-alert>
+
+                                <span class="overline">GENERAL</span>
+                                <v-switch v-model="editing" class="mx-2" label="Editar"></v-switch>
+                                <v-row>
+                                    <v-col cols="12" md="6">
                                         <v-text-field
                                             v-model="perfil.username"
                                             label="Nombre de usuario"
                                             outlined
+                                            :loading="updating"
                                             :disabled="!editing"
                                         ></v-text-field>
                                     </v-col>
-                                </v-list-item-content>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-col cols="12" sm="6">
-                                        <v-text-field
-                                        type="password"
-                                        label="Contraseña"
-                                        :disabled="!editing"
-                                        loading
-                                        outlined
-                                        >
-                                        <template v-slot:progress>
-                                            <v-progress-linear
-                                            :value="progress"
-                                            :color="color"
-                                            absolute
-                                            height="7"
-                                            ></v-progress-linear>
-                                        </template>
-                                        </v-text-field>
-                                    </v-col>
-                                </v-list-item-content>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-col cols="12" sm="6">
+                                    
+                                    <v-col cols="12" md="6">
                                         <v-text-field
                                             v-model="user.nombre"
                                             label="Nombre"
                                             outlined
+                                            :loading="updating"
                                             :disabled="!editing"
                                         ></v-text-field>
                                     </v-col>
-                                </v-list-item-content>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-col cols="12" sm="6">
+                                    
+                                    <v-col cols="12" md="6">
                                         <v-text-field
                                             v-model="user.email"
                                             label="Email"
                                             outlined
+                                            :loading="updating"
                                             :disabled="!editing"
                                         ></v-text-field>
                                     </v-col>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
+                                </v-row>
+                            </v-card-text>
+                            <v-card-actions v-if="editing">
+                                <v-spacer></v-spacer>
+                                <v-btn class="mx-5" outlined color="primary" @click="editData">Guardar</v-btn>
+                                <v-btn class="mx-5" outlined color="red" @click="editing = false">Cancelar</v-btn>
+                            </v-card-actions>
+                        </v-tab-item>
 
+                        <!-- Password tab -->
+                        <v-tab-item>
+                            <v-card-text>
+                                <v-alert
+                                    dense
+                                    text
+                                    type="success"
+                                    v-model="successPasswd"
+                                    dismissible
+                                >
+                                    Tu contraseña ha sido <strong>correctamente</strong> actualizada.
+                                </v-alert>
 
-                    </v-card-text>
-                    <v-card-actions v-if="editing">
-                        <v-btn class="mx-5" outlined color="primary" @click="editData">Guardar</v-btn>
-                        <v-btn class="mx-5" outlined color="red">Cancelar</v-btn>
-                    </v-card-actions>
-                
+                                <span class="overline">SEGURIDAD</span>
+                                <v-switch v-model="editing" class="mx-2" label="Editar"></v-switch>
+                                <v-row>
+                                    <v-col cols="12">
+                                        <v-text-field
+                                            v-model="password_one"
+                                            type="password"
+                                            label="Contraseña"
+                                            :disabled="!editing"
+                                            :loading="updating"
+                                            outlined
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                            <v-card-actions v-if="editing">
+                                <v-spacer></v-spacer>
+                                <v-btn class="mx-5" outlined color="primary" @click="editPasswd">Guardar</v-btn>
+                                <v-btn class="mx-5" outlined color="red" @click="editing = false">Cancelar</v-btn>
+                            </v-card-actions>
+                        </v-tab-item>
+                    </v-tabs-items>
+
                 </v-card>
                 </v-skeleton-loader>
             </v-col>
@@ -136,12 +159,15 @@ import { http } from '@/plugins/http.js'
 export default {
     name: "Account",
     data: () => ({
+        tab: null,
         user: {},
         perfil: {},
         editing: false,
         password_one: '',
         successAlert: false,
+        successPasswd: false,
         loading: true,
+        updating: false,
         snackText: '',
         errorUpdate: false
     }),
@@ -161,6 +187,8 @@ export default {
             this.loading = false;
         },
         editData () {
+            this.editing = false;
+            this.updating = true;
             http.patch(`/Usuario/${this.user._id}`, { 
                 nombre: this.user.nombre,
                 email: this.user.email,
@@ -174,9 +202,20 @@ export default {
                 })
                 .catch(() => this.restoreUser())
                 .finally(() => {
-                    this.editing = false;
+                    this.updating = false;
                     window.scrollTo(0,0); 
                 });
+        },
+        editPasswd() {
+            this.editing = false;
+            this.updating = true;
+            console.log(this.password_one);
+            http.post(`Usuario/passwd/${this.user._id}`, { passwd: this.password_one })
+                .then(res => {
+                    if (res.data.ok) this.successPasswd = true;
+                })
+                .catch(() => this.restoreUser())
+                .finally(() => this.updating = false);
         },
         restoreUser() {
             this.errorUpdate = true;
