@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container>
         <v-card class="mx-auto fitScreen">
             <v-toolbar color="secondary" dark flat>
 
@@ -12,8 +12,9 @@
                         <v-subheader>Conversaciones</v-subheader>
                         <v-list-item-group color="primary">
                             <v-list-item
-                                v-for="chat in chats"
-                                v-bind:key="chat.key"
+                                v-for="(chat, index) in chats"
+                                v-bind:key="index"
+                                @click="viewChat(index)"
                             >
                                 <v-list-item-avatar>
                                     <v-img src="https://randomuser.me/api/portraits/men/84.jpg"></v-img>
@@ -74,6 +75,10 @@ export default {
                 .catch(err => {
                     console.log(err.response.statusText);
                 });
+        },
+        viewChat(key) {
+            this.chatid = this.chats[key]._id;
+            this.title = this.chats[key].miembros[0].nombre;
         }
     },
     mounted() {
