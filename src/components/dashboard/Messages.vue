@@ -116,7 +116,7 @@ export default {
 
 <style>
 .msgScreen {
-    max-height: 65vh;
+    max-height: 73vh;
     overflow: auto;
 }
 </style>
