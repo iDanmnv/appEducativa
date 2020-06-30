@@ -58,7 +58,7 @@
                                 <v-list-item-content>
                                     <v-col cols="12" sm="6">
                                         <v-text-field
-                                            :value="perfil.username"
+                                            v-model="perfil.username"
                                             label="Nombre de usuario"
                                             outlined
                                             :disabled="!editing"
@@ -92,7 +92,7 @@
                                 <v-list-item-content>
                                     <v-col cols="12" sm="6">
                                         <v-text-field
-                                            :value="user.nombre"
+                                            v-model="user.nombre"
                                             label="Nombre"
                                             outlined
                                             :disabled="!editing"
@@ -104,7 +104,7 @@
                                 <v-list-item-content>
                                     <v-col cols="12" sm="6">
                                         <v-text-field
-                                            :value="user.email"
+                                            v-model="user.email"
                                             label="Email"
                                             outlined
                                             :disabled="!editing"
@@ -125,11 +125,13 @@
                 </v-skeleton-loader>
             </v-col>
         </v-row>
+
+        <v-snackbar v-model="errorUpdate">{{snackText}}</v-snackbar>
     </v-container>
 </template>
 
 <script>
-//import { http } from '@/plugins/http.js'
+import { http } from '@/plugins/http.js'
 
 export default {
     name: "Account",
@@ -137,14 +139,11 @@ export default {
         user: {},
         perfil: {},
         editing: false,
-        username: '',
         password_one: '',
-        name: '',
-        email: '',
         successAlert: false,
-        value: '',
-        loading: true
-
+        loading: true,
+        snackText: '',
+        errorUpdate: false
     }),
     beforeRouteEnter(to, from, next) {
         next(vm => {
@@ -162,11 +161,29 @@ export default {
             this.loading = false;
         },
         editData () {
-            
-            
-            this.successAlert = true;
-            this.editing = false;
-            window.scrollTo(0,0); 
+            http.patch(`/Usuario/${this.user._id}`, { 
+                nombre: this.user.nombre,
+                email: this.user.email,
+                perfil: { username: this.perfil.username }
+            })
+                .then(res => {
+                    const data = res.data;
+                    if (data.ok)
+                        this.$store.dispatch('updateUser', data.usuario).then(() => this.successAlert = true);
+                    else this.restoreUser();
+                })
+                .catch(() => this.restoreUser())
+                .finally(() => {
+                    this.editing = false;
+                    window.scrollTo(0,0); 
+                });
+        },
+        restoreUser() {
+            this.errorUpdate = true;
+            this.snackText = "Error al actualizar los datos!";
+            this.user.nombre = this.$store.state.user.nombre;
+            this.user.email = this.$store.state.user.email;
+            this.perfil.username = this.$store.state.user.perfil.username;
         }
     },
     computed: {

@@ -30,6 +30,9 @@ export default new Vuex.Store({
 		jwt_error(state) {
 			state.status = 'error';
 		},
+		set_user(state, user) {
+			state.user = user;
+		},
 		logout(state) {
 			// Limpiamos variables, eliminamos cookie y autenticidad Bearer.
 			state.status = '';
@@ -77,15 +80,12 @@ export default new Vuex.Store({
 				resolve();
 			});
 		},
-		// registerUserInCourse(state, data){
-		// 	http.post()
-		// 	then(r => r.json())
-		// 	.then(r => {
-		// 		if(r.data.ok){
-		// 			console.log('user registered');
-		// 		}
-		// 	});
-		// }
+		updateUser({ commit }, user) {
+			return new Promise((resolve) => {
+				commit('set_user', user);
+				resolve();
+			})
+		}
 	},
 	// Obtener variables fuera de vuex
 	getters : {
