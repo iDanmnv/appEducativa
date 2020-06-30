@@ -11,6 +11,7 @@ export default new Vuetify({
             light: {
                 primary: colors.blue.darken1,
                 secondary: colors.purple.darken1,
+                tertiary: colors.teal.lighten1,
                 accent: colors.shades.black,
                 error: colors.red.darken1,
                 success: colors.green.darken1,
@@ -20,6 +21,7 @@ export default new Vuetify({
             dark: {
                 primary: colors.teal.darken3,
                 secondary: colors.yellow.darken1,
+                tertiary: colors.red.lighten1,
                 accent: colors.shades.black,
                 error: colors.red.darken1,
                 success: colors.green.darken1,
