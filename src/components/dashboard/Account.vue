@@ -58,7 +58,7 @@
                                 <v-list-item-content>
                                     <v-col cols="12" sm="6">
                                         <v-text-field
-                                            :value="user.perfil.username"
+                                            :value="perfil.username"
                                             label="Nombre de usuario"
                                             outlined
                                             :disabled="!editing"
@@ -135,6 +135,7 @@ export default {
     name: "Account",
     data: () => ({
         user: {},
+        perfil: {},
         editing: false,
         username: '',
         password_one: '',
@@ -145,10 +146,19 @@ export default {
         loading: true
 
     }),
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            vm.loadData();
+        });
+    },
+    beforeRouteUpdate(to, from, next) {
+        this.loadData();
+        next();
+    },
     methods: {
         loadData () {
             this.user = this.$store.state.user;
-            console.log(this.user);
+            this.perfil = this.$store.state.user.perfil;
             this.loading = false;
         },
         editData () {
@@ -167,8 +177,5 @@ export default {
             return ['error', 'warning', 'success'][Math.floor(this.progress / 40)]
         },
     },
-    mounted(){
-        this.loadData();
-    }
 }
 </script>
