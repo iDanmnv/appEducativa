@@ -7,7 +7,7 @@
             </v-toolbar>
             <v-row class="rowFitScreen" justify="center" no-gutters>
                 <!-- Chat List -->
-                <v-col lg="3">
+                <v-col cols="4" md="3">
                     <v-list subheader dense rounded>
                         <v-subheader>Conversaciones</v-subheader>
                         <v-list-item-group color="primary">
@@ -28,7 +28,7 @@
                     </v-list>
                 </v-col>
                 <!-- Chat messages -->
-                <v-col lg="9">
+                <v-col cols="8" md="9">
                     <Messages v-bind:key="chatid" :chatid="chatid" />
                 </v-col>
             </v-row>
