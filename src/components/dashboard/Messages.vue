@@ -33,15 +33,6 @@ export default {
     data: () => ({
         messages: []
     }),
-    // beforeRouteEnter(to, from, next) {
-    //     next(vm => {
-    //         vm.loadMessages();
-    //     });
-    // },
-    // beforeRouteUpdate(to, from, next) {
-    //     this.loadMessages();
-    //     next();
-    // },
     methods: {
         loadMessages() {
             if (this.chatid != undefined && this.chatid != null) {
@@ -50,7 +41,6 @@ export default {
                         const data = res.data;
     
                         if (data.ok) this.messages = data.messages;
-                        console.log(this.messages);
                     })
                     .catch(erro => console.log(erro.response.statusText));
 
