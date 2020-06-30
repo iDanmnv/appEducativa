@@ -209,7 +209,6 @@ export default {
         editPasswd() {
             this.editing = false;
             this.updating = true;
-            console.log(this.password_one);
             http.post(`Usuario/passwd/${this.user._id}`, { passwd: this.password_one })
                 .then(res => {
                     if (res.data.ok) this.successPasswd = true;

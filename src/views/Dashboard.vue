@@ -101,7 +101,7 @@ export default {
             { icon: "rss", text: "Mis cursos", page: "/" },
             { icon: "view-list", text: "Catálogo", page: "/courses" },
             { icon: "account-box", text: "Perfil", page: "/profile" },
-            { icon: "account-box", text: "Chat", page: "/chat" }
+            { icon: "forum", text: "Chat", page: "/chat" }
         ]
 	}),
 	methods: {
