@@ -20,7 +20,7 @@ export default new Vuetify({
             },
             dark: {
                 primary: colors.teal.darken3,
-                secondary: colors.yellow.darken1,
+                secondary: colors.grey.darken2,
                 tertiary: colors.red.lighten1,
                 accent: colors.shades.black,
                 error: colors.red.darken1,

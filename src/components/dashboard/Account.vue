@@ -1,11 +1,11 @@
 <template>
-    <v-container fluid>
+    <v-container>
         <v-row
         class="mb-6"
         justify="center"
         no-gutters
         >
-            <v-col lg="10">
+            <v-col cols="12">
 
                 <v-skeleton-loader
                     :loading="loading"
