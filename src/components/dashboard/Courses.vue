@@ -45,7 +45,7 @@
         </v-alert>
         <div class="header">
             <h3 class="header-text">Catalogo de Cursos</h3>
-            <v-btn color="success" @click="dialogCreateCourse = true">Crear Curso</v-btn>
+            <v-btn :hidden="userRole != 'ADMIN' ? true : false" color="success" @click="dialogCreateCourse = true">Crear Curso</v-btn>
         </div>
         <div style="display: flex; justify-content: center; margin-top: 50px;">
             <v-flex xs12 sm6 md8>
@@ -64,7 +64,8 @@
                             class="primary">
                             {{coursesByUser.includes(course._id) ? 'Ya estas inscrito' : 'Inscribirme'}}
                         </v-btn>
-                        <v-btn color="red lighten-2" dark @click="courseInfo(course)" rounded class="secondary small">información</v-btn>
+                        <v-btn color="warning" dark @click="courseInfo(course)" rounded class="secondary small">información</v-btn>
+                        <v-btn color="error" :hidden="userRole != 'ADMIN' ? true : false" dark @click="EliminarCurso(course)" rounded class="secondary small">Eliminar Curso</v-btn>
                     </v-card-actions>
                 </v-card>
         </v-flex>
@@ -207,9 +208,11 @@ export default {
       },
       dialog: false,
       dialogCreateCourse: false,
+      userRole: 'ADMIN',
   }),
   mounted() {
     this.getCourses();
+    this.userRole= this.$store.state.user.rol;
   },
   methods:{
       getCourses(){
@@ -265,7 +268,8 @@ export default {
             this.preguntasContenido = [];
       },
       confirmadoNuevoContenido(){
-          this.nuevoCursoObject.contenidos.push({  
+          this.nuevoCursoObject.contenidos.push({ 
+            id: new Date(), 
             titulo: this.nuevoCursoContenidoTitulo,
             nivel: this.nuevoCursoContenidoNivel || 1,
             video: this.nuevoCursoContenidoVideo,
@@ -287,10 +291,22 @@ export default {
           http.post('/Curso', { curso: this.nuevoCursoObject })
           .then(r => {
               console.log(r);
+                this.dialogCreateCourse = false;
+                this.getCourses();
           })
           .catch((err) => {
               console.log('error', err);
           });
+      },
+     async EliminarCurso (curso){
+          const { _id } = curso;
+          await http.delete(`/Curso/${_id}`).then(result => {
+              console.log(result);
+              if(result.status == 200){
+                  this.getCourses();
+              }
+          })
+          
       }
   }
 };
