@@ -7,6 +7,8 @@
     }
     .main-container{
         padding-top: 20px;
+        display: flex;
+        flex-wrap: nowrap;
     }
     .start-quiz-container{
         display:flex;
@@ -59,7 +61,7 @@
                     Explicacion del tema:
                     <youtube-media class="video" :video-id="contenido.video"></youtube-media>
                     <div class="start-quiz-container">
-                        <v-btn @click="startQuiz(contenido)" color="success">Comenzar quiz</v-btn>
+                        <v-btn @click="startQuiz(contenido, contenido._id)" color="success">Comenzar quiz</v-btn>
                     </div>
                 </v-expansion-panel-content>
             </v-expansion-panel>
@@ -79,12 +81,15 @@
             </v-card-title>
     
             <v-card-text>
-               <div   v-for="preguntaTmp in selectedQuiz.preguntas" :key="preguntaTmp.pregunta">
+               <div   v-for="(preguntaTmp, index) in selectedQuiz.preguntas" :key="preguntaTmp.pregunta">
                     Pregunta: {{preguntaTmp.pregunta}}
                     <v-col class="d-flex" >
                         <v-select
                         :items="preguntaTmp.respuestas.map((r) => r.respuesta)"
-                        label="Respuestas"
+                        :label="respuestasExamen[index] != undefined ? 'Pregunta contestada': 'Respuestas'"
+                        :disabled="respuestasExamen[index] != undefined ? true : false"
+                        :item-value="respuestasExamen[index] == undefined ? '' : respuestasExamen[index]"
+                         @change="agregarRespuestaArray($event, index)"
                         ></v-select>
                     </v-col>
                </div>
@@ -96,7 +101,7 @@
                 <v-btn
                 color="success"
                 text
-                @click="dialog = false"
+                @click="revisarTest()"
                 >
                 Revisar
                 </v-btn>
@@ -131,11 +136,20 @@ export default {
         detailOpened: false,
         dialog: false,
         selectedQuiz: [],
+        selectedContent: {},
+        respuestasUsuario: {},
+        respuestasExamen: [],
+        userContents : [],
     }), 
     mounted() {
     this.getCourses();
+    this.getUserContents();
     },
+    updated(){},
     methods:{
+     agregarRespuestaArray(event, index){
+          this.respuestasExamen[index] = event;
+     }, 
       getCourses(){
         http.get("/Curso")
         .then((result) => {
@@ -153,14 +167,50 @@ export default {
           this.myCourses = this.courses.filter((curso) => coursesIds.includes(curso._id) ? curso : null );
       },
       setSelectedCourse(myCourse){
-          this.selectedCourse = myCourse;
+        this.selectedCourse = myCourse;
         this.detailOpened = true;
-          console.log(this.selectedCourse);
+        //   console.log(this.selectedCourse);
       },
-      startQuiz(contenido){
+      startQuiz(contenido, id){
+          this.selectedContent = {...contenido, id};
           this.selectedQuiz = contenido.quiz;
+          this.respuestasExamen = [];
           this.dialog = true;
-      }
+      },
+      revisarTest(){
+        //   console.log(this.respuestasExamen);
+        //   console.log(this.selectedQuiz);
+          let puntuacion = 0;
+          for(let i = 0; i < this.respuestasExamen.length; i++){
+              for(let j = 0; j< this.selectedQuiz.preguntas[i].respuestas.length; j++){
+                  if(this.selectedQuiz.preguntas[i].respuestas[j].respuesta == this.respuestasExamen[i] && this.selectedQuiz.preguntas[i].respuestas[j].correcta == true){
+                    puntuacion++;
+                  }
+              }
+          }
+          const puntuacionMaxima = this.selectedQuiz.preguntas.length;
+          const calificacion = (puntuacion * 10) / puntuacionMaxima;
+        //   console.log('califiacion: ',calificacion);
+        //   console.log('contenido: ', this.selectedContent);
+        //   console.log('user: ',this.$store.state.user);
+        const { _id = null } = this.selectedContent;
+        const { _id: usuId = null } = this.$store.state.user;
+        http.post('/UsuarioContenido', { idUsuario: usuId, idContenido: _id, calificacion }).then((result) => {
+            if( result.status == 200){
+                console.log("exito");
+                this.dialog = false;
+
+            } else {
+                console.log("falló");
+            }
+        });
+      },
+      getUserContents(){
+          http.get('/UsuarioContenido')
+          .then(result => {
+              console.log(result);
+          });
+      },
     }
 }
 </script>
