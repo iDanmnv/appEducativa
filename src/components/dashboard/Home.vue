@@ -211,7 +211,7 @@ export default {
       },
       generateChartInfo(){
         const currentContentIds = this.selectedCourse.contenidos.map(contenido => contenido._id);
-        let specificUserContents = this.userContents.map( uc => currentContentIds.includes(uc.idContenido) ? uc : null);
+        let specificUserContents = this.userContents.map( uc => currentContentIds.includes(uc.idContenido) && uc.idUsuario == this.$store.state.user._id ? uc : null);
         specificUserContents = specificUserContents.filter( item => item != null);
         if(specificUserContents.length > 0){
             console.log('specific user content',specificUserContents);
