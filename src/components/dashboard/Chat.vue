@@ -40,7 +40,7 @@
                 </v-col>
                 <!-- Chat messages -->
                 <v-col cols="8" md="9">
-                    <Messages v-bind:key="chatid" :chatid="chatid" />
+                    <Messages v-if="chats.length > 0" v-bind:key="chatid" :chatid="chatid" />
                 </v-col>
             </v-row>
         </v-card>
@@ -134,10 +134,13 @@ export default {
 
                     if (data.ok) {
                         this.chats = data.chats;
-                        this.chatid = this.chats[0]._id;
-                        this.title = this.chats[0].miembros[0].nombre;
-                        
-                        this.loadUsers(this.chats.map(chat => chat.miembros[0]._id));
+                        if (this.chats.length > 0) {
+                            this.chatid = this.chats[0]._id;
+                            this.title = this.chats[0].miembros[0].nombre;
+                            
+                            this.loadUsers(this.chats.map(chat => chat.miembros[0]._id));
+                        }
+                        else this.loadUsers([]);
                     }
                 })
                 .catch(err => {
