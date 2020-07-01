@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!-- Area de mensajes -->
         <v-responsive class="msgScreen" ref="chatBox">
             <v-row no-gutters ref="list_msgs">
                 <v-col
@@ -10,6 +11,7 @@
                     <v-card
                         :color="(isLogged(msg.IdAutor))? 'primary' : 'tertiary'"
                         :style="`float: ${isLogged(msg.IdAutor) ? 'right' : 'left'}`"
+                        @click="confirmDelete(msg.IdAutor, msg._id)"
                         class="ma-2"
                         max-width="35vw"
                         flat
@@ -26,6 +28,7 @@
             </v-row>
         </v-responsive>
 
+        <!-- Textarea para mensaje -->
         <div class="d-flex flex-row">
             <v-textarea
                 v-model="msgText"
@@ -43,6 +46,27 @@
                 <v-btn class="mx-2" fab small color="primary" :disabled="emptyText" @click="sendMsg"><v-icon dark>mdi-send</v-icon></v-btn>
             </div>
         </div>
+
+        <!-- Modal para eliminar mensaje -->
+        <v-dialog
+            v-model="dialogDel"
+            max-width="290"
+        >
+            <v-card>
+                <v-card-title class="headline">Whoaa!</v-card-title>
+                <v-card-text>¿Deseas eliminar el mensaje?</v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="dialogDel = false">No</v-btn>
+
+                    <v-btn color="error" text @click="deleteMsg">Sí</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <!-- Messafe from deleted -->
+        <v-snackbar v-model="deletedMsg">Mensaje eliminado!</v-snackbar>
     </div>
 </template>
 
@@ -55,11 +79,15 @@ export default {
         chatid: String
     },
     data: () => ({
-        messages: [],
-        msgText: '',
-        sending: false
+        messages: [], // Chat messages
+        msgText: '', // Text of new message
+        sending: false, // Sending message to back
+        dialogDel: false, // Var to open confirm dialog
+        msgToDelete: '', // Message id to delete
+        deletedMsg: false // Var to open snackbar when deleted message
     }),
     methods: {
+        // Load chat messages
         loadMessages() {
             if (this.chatid != undefined && this.chatid != null) {
                 http.get(`Conversacion/messages/${this.chatid}`)
@@ -72,12 +100,15 @@ export default {
 
             }
         },
+        // Return if messare belong to logged user
         isLogged(uid) {
             return this.$store.state.user._id == uid;
         },
+        // Convert date to string
         getDate(date) {
             return new Date(date).toLocaleString();
         },
+        // Send message to back
         sendMsg() {
             if (!this.emptyText) {
                 this.sending = true;
@@ -95,6 +126,34 @@ export default {
                     .finally(() => this.sending = false);
             }
         },
+        // Dialog to confirm delete
+        confirmDelete(autor, msgid) {
+            if (this.isLogged(autor)) {
+                this.dialogDel = true;
+                this.msgToDelete = msgid;
+            }
+        },
+        // Delete message from back
+        deleteMsg() {
+            if (this.msgToDelete != '') {
+                http.delete(`Conversacion/chat/${this.chatid}/message/${this.msgToDelete}`)
+                    .then(res => {
+                        const data = res.data;
+
+                        if (data.ok) {
+                            let index = this.messages.findIndex(msg => msg._id == data._mid)
+                            this.messages.splice(index, 1);
+                            this.deletedMsg = true;
+                        }
+                    })
+                    .catch(erro => console.log(erro.response.statusText))
+                    .finally(() => {
+                        this.msgToDelete = '';
+                        this.dialogDel = false;
+                    })
+            }
+        },
+        // Set messages area to bottom always
         scrollToEnd() {
             var chatBox = this.$el.querySelector(".msgScreen");
             chatBox.scrollTop = this.$refs.list_msgs.clientHeight;
