@@ -179,7 +179,16 @@ export default {
         test:[10,5,4,7,5,4,3,2,2],
         labelsChart: [],
         sumaCalif: 0,
-    }), 
+    }),
+    // Redirect admin to courses
+    beforeRouteEnter(to, from, next) {
+        next(vm => {
+            let rol = vm.$store.state.user.rol;
+            
+            if (rol == 'ADMIN')
+                vm.$router.push({ path: '/courses' });
+        })
+    },
     mounted() {
     this.getCourses();
     this.getUserContents();
