@@ -292,6 +292,7 @@ export default {
       guardarNuevoCurso(){
           this.nuevoCursoObject.nombre = this.nuevoCursoNombre;
           this.nuevoCursoObject.autor = this.nuevoCursoAutor;
+          this.nuevoCursoObject.idAutor = this.$store.state.user._id;
           http.post('/Curso', { curso: this.nuevoCursoObject })
           .then(r => {
               console.log(r);
