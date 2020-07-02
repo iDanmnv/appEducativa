@@ -49,11 +49,11 @@
                 </v-list-item-group>
             </v-list>
         </v-card>
-        <div v-if="detailOpened" style="width: 70%; height: 400px; background: #F2F7F6; padding: 10px">
-            <v-subheader>{{selectedCourse.nombre}}</v-subheader>
+        <div v-if="detailOpened" style="width: 70%; height: auto; background: #F2F7F6; padding: 10px">
+            <v-subheader class="display-1 font-weight-thin">{{selectedCourse.nombre}}</v-subheader>
             <v-expansion-panels>
             <v-expansion-panel
-                v-for="contenido in selectedCourse.contenidos"
+                v-for="(contenido, index) in selectedCourse.contenidos"
                 :key="contenido._id"
             >
                 <v-expansion-panel-header>{{contenido.titulo}}</v-expansion-panel-header>
@@ -61,11 +61,41 @@
                     Explicacion del tema:
                     <youtube-media class="video" :video-id="contenido.video"></youtube-media>
                     <div class="start-quiz-container">
-                        <v-btn @click="startQuiz(contenido, contenido._id)" color="success">Comenzar quiz</v-btn>
+                        <v-btn @click="startQuiz(contenido, contenido._id)" :disabled="graphValues[index] != null ? true : false" color="success">Comenzar quiz</v-btn>
                     </div>
                 </v-expansion-panel-content>
             </v-expansion-panel>
             </v-expansion-panels>
+            <v-card
+                class="mx-auto text-center"
+                :color="(sumaCalif/ graphValues.length) > 6 ? 'green' : 'red'"
+                dark
+                
+            >
+            <v-card-text>
+                <v-sheet color="rgba(0, 0, 0, .12)">
+                    <v-sparkline
+                    :value="graphValues"
+                    :labels="labelsChart"
+                    color="rgba(255, 255, 255, .7)"
+                    height="150"
+                    padding="30"
+                    stroke-linecap="round"
+                    label-size="4"
+                    smooth
+                    
+                    >
+                    <template v-slot:label="item">
+                        {{ item.value }}
+                    </template>
+                    </v-sparkline>
+                </v-sheet>
+            </v-card-text>
+               <v-card-text >
+                    <div class="display-1 font-weight-thin">Tu Rendimiento en el curso es de {{(sumaCalif/graphValues.length).toFixed(2)}}</div>
+                </v-card-text>
+                <v-divider></v-divider>
+        </v-card>
         </div>
     </v-row>
      <v-dialog
@@ -120,6 +150,7 @@
 
 <script>
 import { http } from '@/plugins/http.js';
+
 export default {
     name: "home",
     data: () => ({
@@ -140,6 +171,10 @@ export default {
         respuestasUsuario: {},
         respuestasExamen: [],
         userContents : [],
+        graphValues: [],
+        test:[10,5,4,7,5,4,3,2,2],
+        labelsChart: [],
+        sumaCalif: 0,
     }), 
     mounted() {
     this.getCourses();
@@ -167,9 +202,28 @@ export default {
           this.myCourses = this.courses.filter((curso) => coursesIds.includes(curso._id) ? curso : null );
       },
       setSelectedCourse(myCourse){
+        this.sumaCalif = 0;
         this.selectedCourse = myCourse;
         this.detailOpened = true;
-        //   console.log(this.selectedCourse);
+        this.graphValues = [];
+        this.getUserContents();
+        this.generateChartInfo();
+      },
+      generateChartInfo(){
+        const currentContentIds = this.selectedCourse.contenidos.map(contenido => contenido._id);
+        let specificUserContents = this.userContents.map( uc => currentContentIds.includes(uc.idContenido) && uc.idUsuario == this.$store.state.user._id ? uc : null);
+        specificUserContents = specificUserContents.filter( item => item != null);
+        if(specificUserContents.length > 0){
+            console.log('specific user content',specificUserContents);
+                this.graphValues = specificUserContents.map((item) => item.calificacion);
+                console.log('values', this.graphValues);
+                this.labelsChart = this.selectedCourse.contenidos.map((c,i) =>{ 
+                    return c.titulo.concat(` :${this.graphValues[i]}/10`); 
+                });
+                this.graphValues.forEach(v =>{ 
+                    this.sumaCalif += v;
+                }); 
+        }
       },
       startQuiz(contenido, id){
           this.selectedContent = {...contenido, id};
@@ -208,7 +262,7 @@ export default {
       getUserContents(){
           http.get('/UsuarioContenido')
           .then(result => {
-              console.log(result);
+              this.userContents = result.data;
           });
       },
     }
