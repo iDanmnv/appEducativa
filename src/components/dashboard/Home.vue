@@ -75,6 +75,7 @@
                         :color="(sumaCalif/ graphValues.length) > 6 ? 'green' : 'red'"
                         dark
                         raised
+                        :hidden="isStarted(sumaCalif/graphValues.length)"
                     >
                         <v-card-text>
                             <v-sheet color="rgba(0, 0, 0, .12)">
@@ -113,7 +114,7 @@
             >
                 Examen:  {{selectedQuiz.titulo}}!
             </v-card-title>
-            <v-divide></v-divide>
+            <v-divider></v-divider>
             <v-card-text>
                <div   v-for="(preguntaTmp, index) in selectedQuiz.preguntas" :key="preguntaTmp.pregunta">
                     Pregunta: {{preguntaTmp.pregunta}}
@@ -278,6 +279,9 @@ export default {
               this.userContents = result.data;
           });
       },
+        isStarted(number) {
+            return isNaN(number); 
+        }
     }
 }
 </script>
