@@ -27,6 +27,7 @@
                     <v-list-item
                         v-for="item in items"
                         :key="item.text"
+                        :hidden="!item.show"
                         link
                         class="py-3"
                         @click="go(item.page)"
@@ -97,12 +98,7 @@ export default {
     data: () => ({
 		mini: null,
 		dialogSess: false,
-        items: [
-            { icon: "rss", text: "Mis cursos", page: "/" },
-            { icon: "view-list", text: "Catálogo", page: "/courses" },
-            { icon: "account-box", text: "Perfil", page: "/profile" },
-            { icon: "forum", text: "Chat", page: "/chat" }
-        ]
+        items: []
 	}),
 	methods: {
         go(pathRoute) {
@@ -116,6 +112,14 @@ export default {
             this.$store.dispatch('logout')
                 .then(() => this.$router.push({ name: 'Login' }));
         }
+    },
+    mounted() {
+        this.items = [
+            { icon: "rss", text: "Mis cursos", page: "/", show: this.$store.state.user.rol != 'ADMIN' },
+            { icon: "view-list", text: "Catálogo", page: "/courses", show: true },
+            { icon: "forum", text: "Chat", page: "/chat", show: true },
+            { icon: "account-box", text: "Perfil", page: "/profile", show: true }
+        ]
     }
 }
 </script>

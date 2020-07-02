@@ -14,6 +14,11 @@
                     <v-text-field v-model="name" :rules="nameRules" label="Nombre" required></v-text-field>
 
                     <v-text-field v-model="username" :rules="usernameRules" label="Username" required></v-text-field>
+
+                    <v-switch
+                        v-model="rol"
+                        :label="`Tipo: ${typeUser(rol)}`"
+                    ></v-switch>
                 </div>
 
                 <v-card-actions>
@@ -47,6 +52,7 @@ export default {
         nameRules: [ v => !!v || "Campo obligatorio"],
         username: "",
         usernameRules: [ v => !!v || "Campo obligatorio" ],
+        rol: false,
     }),
 
     methods: {
@@ -54,13 +60,16 @@ export default {
             // Submit
             if (this.$refs.form.validate()) {
                 // Registro
-                axios.post(`${URL}/auth/register`, { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: "USER" })
+                axios.post(`${URL}/auth/register`, { email: this.email, passwd: this.password, nombre: this.name, username: this.username, rol: this.typeUser(this.rol)})
                     .then(res => {
                         // Success
                         if (res.data.ok) this.$router.push({ name: 'Login', params: { showSnack: true, message: "Usuario registrado!" }});
                     })
                     .catch(err => console.log(err.response) );
             }
+        },
+        typeUser(bool) {
+            return (bool) ? 'ADMIN' : 'USER';
         },
         reset() {
             this.$refs.form.reset();
