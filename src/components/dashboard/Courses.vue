@@ -63,11 +63,12 @@
                                 :disabled="coursesByUser.includes(course._id)"
                                 raised 
                                 @click="inscirbirseBtnClicked(course._id)" 
+                                :hidden="userRole == 'ADMIN'"
                                 class="primary">
                                 {{coursesByUser.includes(course._id) ? 'Ya estas inscrito' : 'Inscribirme'}}
                             </v-btn>
                             <v-btn color="warning" dark @click="courseInfo(course)" rounded class="secondary small">información</v-btn>
-                            <v-btn color="error" :hidden="userRole != 'ADMIN' ? true : false" dark @click="EliminarCurso(course)" rounded class="secondary small">Eliminar Curso</v-btn>
+                            <v-btn color="error" :hidden="permDelete(course.idAutor)" dark @click="EliminarCurso(course)" rounded class="secondary small">Eliminar Curso</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-flex>
@@ -300,6 +301,9 @@ export default {
           .catch((err) => {
               console.log('error', err);
           });
+      },
+      permDelete(uid) {
+          return (this.userRole != 'ADMIN') ? true : (uid != this.$store.state.user._id); 
       },
      async EliminarCurso (curso){
           const { _id } = curso;
