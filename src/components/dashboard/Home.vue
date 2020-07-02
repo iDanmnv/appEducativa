@@ -22,94 +22,98 @@
 </style>
 <template>
    <v-container>
-        <div class="header">
-            <h3 class="header-text">MIS CURSOS</h3>
-        </div>
-        <v-row class="main-container">
-        <v-card
-        class="mx-auto"
-        max-width="400"
-        tile>
-            <v-list
-                :three-line="threeLine"
-                :shaped="shaped"
-                :nav="nav"
-            >
-                <v-subheader>MIS CURSOS</v-subheader>
-                <v-list-item-group color="primary">
-                <v-list-item
-                    v-for="myCourse in myCourses"
-                    :key="myCourse._id"
-                >
-                    <v-list-item-content @click="setSelectedCourse(myCourse)">
-                    <v-list-item-title v-html="myCourse.nombre"></v-list-item-title>
-                    <v-list-item-subtitle v-if="threeLine" v-html="myCourse.autor"></v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item>
-                </v-list-item-group>
-            </v-list>
-        </v-card>
-        <div v-if="detailOpened" style="width: 70%; height: auto; background: #F2F7F6; padding: 10px">
-            <v-subheader class="display-1 font-weight-thin">{{selectedCourse.nombre}}</v-subheader>
-            <v-expansion-panels>
-            <v-expansion-panel
-                v-for="(contenido, index) in selectedCourse.contenidos"
-                :key="contenido._id"
-            >
-                <v-expansion-panel-header>{{contenido.titulo}}</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    Explicacion del tema:
-                    <youtube-media class="video" :video-id="contenido.video"></youtube-media>
-                    <div class="start-quiz-container">
-                        <v-btn @click="startQuiz(contenido, contenido._id)" :disabled="graphValues[index] != null ? true : false" color="success">Comenzar quiz</v-btn>
-                    </div>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
-            </v-expansion-panels>
-            <v-card
-                class="mx-auto text-center"
-                :color="(sumaCalif/ graphValues.length) > 6 ? 'green' : 'red'"
-                dark
-                
-            >
-            <v-card-text>
-                <v-sheet color="rgba(0, 0, 0, .12)">
-                    <v-sparkline
-                    :value="graphValues"
-                    :labels="labelsChart"
-                    color="rgba(255, 255, 255, .7)"
-                    height="150"
-                    padding="30"
-                    stroke-linecap="round"
-                    label-size="4"
-                    smooth
-                    
+       <v-card class="pb-5">
+            <v-toolbar color="secondary" dark flat>
+                <v-toolbar-title>Mis cursos</v-toolbar-title>
+            </v-toolbar>
+            <v-row class="main-container">
+                <v-col cols="4">
+                    <v-card
+                    class="mx-auto"
+                    max-width="400"
+                    tile
+                    flat>
+                        <v-list
+                            :three-line="threeLine"
+                            :shaped="shaped"
+                            :nav="nav"
+                        >
+                            <!-- <v-subheader>MIS CURSOS</v-subheader> -->
+                            <v-list-item-group color="primary">
+                            <v-list-item
+                                v-for="myCourse in myCourses"
+                                :key="myCourse._id"
+                            >
+                                <v-list-item-content @click="setSelectedCourse(myCourse)">
+                                <v-list-item-title v-html="myCourse.nombre"></v-list-item-title>
+                                <v-list-item-subtitle v-if="threeLine" v-html="myCourse.autor"></v-list-item-subtitle>
+                                </v-list-item-content>
+                            </v-list-item>
+                            </v-list-item-group>
+                        </v-list>
+                    </v-card>
+                </v-col>
+                <v-col cols="8" v-if="detailOpened" class="p-3">
+                    <v-subheader class="display-1 font-weight-thin">{{selectedCourse.nombre}}</v-subheader>
+                    <v-expansion-panels flat>
+                        <v-expansion-panel
+                            v-for="(contenido, index) in selectedCourse.contenidos"
+                            :key="contenido._id"
+                        >
+                            <v-expansion-panel-header>{{contenido.titulo}}</v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                Explicacion del tema:
+                                <youtube-media v-if="contenido.video != ''" class="video" :video-id="contenido.video"></youtube-media>
+                                <div class="start-quiz-container">
+                                    <v-btn @click="startQuiz(contenido, contenido._id)" :disabled="graphValues[index] != null ? true : false" color="info">Comenzar quiz</v-btn>
+                                </div>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                    <v-card
+                        class="mx-auto text-center"
+                        :color="(sumaCalif/ graphValues.length) > 6 ? 'green' : 'red'"
+                        dark
+                        raised
                     >
-                    <template v-slot:label="item">
-                        {{ item.value }}
-                    </template>
-                    </v-sparkline>
-                </v-sheet>
-            </v-card-text>
-               <v-card-text >
-                    <div class="display-1 font-weight-thin">Tu Rendimiento en el curso es de {{(sumaCalif/graphValues.length).toFixed(2)}}</div>
-                </v-card-text>
-                <v-divider></v-divider>
-        </v-card>
-        </div>
-    </v-row>
+                        <v-card-text>
+                            <v-sheet color="rgba(0, 0, 0, .12)">
+                                <v-sparkline
+                                :value="graphValues"
+                                :labels="labelsChart"
+                                color="rgba(255, 255, 255, .7)"
+                                height="150"
+                                padding="30"
+                                stroke-linecap="round"
+                                label-size="4"
+                                smooth
+                                
+                                >
+                                <template v-slot:label="item">
+                                    {{ item.value }}
+                                </template>
+                                </v-sparkline>
+                            </v-sheet>
+                        </v-card-text>
+                        <v-card-text >
+                            <div class="display-1 font-weight-thin">Tu Rendimiento en el curso es de {{(sumaCalif/graphValues.length).toFixed(2)}}</div>
+                        </v-card-text>
+                        <v-divider></v-divider>
+                    </v-card>
+                </v-col>
+            </v-row>
+       </v-card>
      <v-dialog
             v-model="dialog"
             width="70%"
         >
             <v-card>
             <v-card-title
-                class="headline grey lighten-2"
                 primary-title
             >
                 Examen:  {{selectedQuiz.titulo}}!
             </v-card-title>
-    
+            <v-divide></v-divide>
             <v-card-text>
                <div   v-for="(preguntaTmp, index) in selectedQuiz.preguntas" :key="preguntaTmp.pregunta">
                     Pregunta: {{preguntaTmp.pregunta}}
@@ -129,18 +133,18 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                color="success"
+                color="error"
                 text
-                @click="revisarTest()"
+                @click="dialog = false"
                 >
-                Revisar
+                Cancelar
                 </v-btn>
                 <v-btn
                 color="primary"
                 text
-                @click="dialog = false"
+                @click="revisarTest()"
                 >
-                Cancel
+                Revisar
                 </v-btn>
             </v-card-actions>
             </v-card>

@@ -100,8 +100,8 @@ export default {
         items: [
             { icon: "rss", text: "Mis cursos", page: "/" },
             { icon: "view-list", text: "Catálogo", page: "/courses" },
-            { icon: "account-box", text: "Perfil", page: "/profile" },
-            { icon: "forum", text: "Chat", page: "/chat" }
+            { icon: "forum", text: "Chat", page: "/chat" },
+            { icon: "account-box", text: "Perfil", page: "/profile" }
         ]
 	}),
 	methods: {
